@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: password
 
   backup:
-    image: eeshugerman/postgres-backup-s3:15
+    image: vohoang/postgres-backup-s3:1.0.0
     environment:
       SCHEDULE: '@weekly'     # optional
       BACKUP_KEEP_DAYS: 7     # optional
@@ -46,37 +46,16 @@ docker exec <container name> sh restore.sh
 ```sh
 docker exec <container name> sh restore.sh <timestamp>
 ```
-
-# Development
-## Build the image locally
-`ALPINE_VERSION` determines Postgres version compatibility. See [`build-and-push-images.yml`](.github/workflows/build-and-push-images.yml) for the latest mapping.
-```sh
-DOCKER_BUILDKIT=1 docker build --build-arg ALPINE_VERSION=3.14 .
-```
-## Run a simple test environment with Docker Compose
-```sh
-cp template.env .env
-# fill out your secrets/params in .env
-docker compose up -d
-```
-
 # Acknowledgements
-This project is a fork and re-structuring of @schickling's [postgres-backup-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-backup-s3) and [postgres-restore-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-restore-s3).
-
-## Fork goals
-These changes would have been difficult or impossible merge into @schickling's repo or similarly-structured forks.
-  - dedicated repository
-  - automated builds
-  - support multiple PostgreSQL versions
-  - backup and restore with one image
+This project is a fork and re-structuring of @eeshugerman [postgres-backup-s3](https://github.com/eeshugerman/postgres-backup-s3)
 
 ## Other changes and features
-  - some environment variables renamed or removed
-  - uses `pg_dump`'s `custom` format (see [docs](https://www.postgresql.org/docs/10/app-pgdump.html))
-  - drop and re-create all database objects on restore
-  - backup blobs and all schemas by default
-  - no Python 2 dependencies
-  - filter backups on S3 by database name
-  - support encrypted (password-protected) backups
-  - support for restoring from a specific backup by timestamp
-  - support for auto-removal of old backups
+- some environment variables renamed or removed
+- uses `pg_dump`'s `custom` format (see [docs](https://www.postgresql.org/docs/10/app-pgdump.html))
+- drop and re-create all database objects on restore
+- backup blobs and all schemas by default
+- no Python 2 dependencies
+- filter backups on S3 by database name
+- support encrypted (password-protected) backups
+- support for restoring from a specific backup by timestamp
+- support for auto-removal of old backups
